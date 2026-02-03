@@ -20,6 +20,16 @@ const Desktop = () => {
     adminLogin: { open: false, minimized: false, zIndex: 1 },
   });
   const [highestZIndex, setHighestZIndex] = useState(10);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Detect screen size changes
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // Auto-open Finder after mount
@@ -102,7 +112,7 @@ const Desktop = () => {
       <MenuBar />
 
       {/* Windows */}
-      <div className="relative h-[calc(100vh-120px)]">
+      <div className="relative h-[calc(100vh-120px)] md:h-[calc(100vh-120px)]">
         {windows.finder.open && (
           <FinderWindow
             onClose={() => closeWindow("finder")}
@@ -110,6 +120,7 @@ const Desktop = () => {
             onFocus={() => focusWindow("finder")}
             isMinimized={windows.finder.minimized}
             zIndex={windows.finder.zIndex}
+            isMobile={isMobile}
           />
         )}
 
@@ -120,6 +131,7 @@ const Desktop = () => {
             onFocus={() => focusWindow("siri")}
             isMinimized={windows.siri.minimized}
             zIndex={windows.siri.zIndex}
+            isMobile={isMobile}
           />
         )}
 
@@ -130,6 +142,7 @@ const Desktop = () => {
             onFocus={() => focusWindow("projects")}
             isMinimized={windows.projects.minimized}
             zIndex={windows.projects.zIndex}
+            isMobile={isMobile}
           />
         )}
 
@@ -140,6 +153,7 @@ const Desktop = () => {
             onFocus={() => focusWindow("contact")}
             isMinimized={windows.contact.minimized}
             zIndex={windows.contact.zIndex}
+            isMobile={isMobile}
           />
         )}
 
@@ -150,6 +164,7 @@ const Desktop = () => {
             onFocus={() => focusWindow("services")}
             isMinimized={windows.services.minimized}
             zIndex={windows.services.zIndex}
+            isMobile={isMobile}
           />
         )}
 
@@ -161,6 +176,7 @@ const Desktop = () => {
             onSuccess={handleAdminSuccess}
             isMinimized={windows.adminLogin.minimized}
             zIndex={windows.adminLogin.zIndex}
+            isMobile={isMobile}
           />
         )}
       </div>
@@ -168,6 +184,7 @@ const Desktop = () => {
       {/* Dock */}
       <Dock
         windows={windows}
+        isMobile={isMobile}
         onWindowClick={(windowId) => {
           if (windows[windowId].open && windows[windowId].minimized) {
             restoreWindow(windowId);
