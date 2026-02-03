@@ -167,17 +167,34 @@ Ezt nem magyarázod túl.
 Nem próbálod alternatívával kiváltani.
 Nem sugallsz hasonlót sem."""
         
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=request.session_id,
-            system_message=system_message
-        ).with_model("openai", "gpt-4o")
+        import httpx
         
-        user_message = UserMessage(text=request.message)
-        response = await chat.send_message(user_message)
+        headers = {
+            "Authorization": f"Bearer {PERPLEXITY_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": "sonar",
+            "messages": [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": request.message}
+            ]
+        }
+        
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                "https://api.perplexity.ai/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=30.0
+            )
+            data = resp.json()
+        
+        response_text = data["choices"][0]["message"]["content"]
         
         return ChatResponse(
-            response=response,
+            response=response_text,
             session_id=request.session_id
         )
     except Exception as e:
