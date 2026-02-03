@@ -35,7 +35,7 @@ const Dock = ({ windows, onWindowClick, isMobile }) => {
   ];
 
   return (
-    <div className={`absolute ${isMobile ? 'bottom-1 left-2 right-2' : 'bottom-2 left-1/2 transform -translate-x-1/2'} z-50`} data-testid="dock">
+    <div className={`${isMobile ? 'fixed bottom-2 left-2 right-2' : 'absolute bottom-2 left-1/2 transform -translate-x-1/2'} z-50`} data-testid="dock">
       <div
         className={`bg-white/10 backdrop-blur-3xl rounded-2xl ${isMobile ? 'px-2 py-1.5' : 'px-3 py-2'} border border-white/20 shadow-2xl ${isMobile ? 'mx-auto max-w-fit' : ''}`}
         style={{
