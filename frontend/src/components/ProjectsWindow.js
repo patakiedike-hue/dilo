@@ -265,6 +265,7 @@ const ProjectsWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex, isM
           </div>
         </div>
       </div>
+      </div>
     </>
   );
 };
