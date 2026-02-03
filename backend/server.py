@@ -30,8 +30,8 @@ resend.api_key = os.environ.get('RESEND_API_KEY', '')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 RECIPIENT_EMAIL = os.environ.get('RECIPIENT_EMAIL', 'szabolcssr8@gmail.com')
 
-# Emergent LLM Key
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+# Perplexity API Key
+PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY', '')
 
 # Create uploads directory
 UPLOADS_DIR = ROOT_DIR / 'uploads'
