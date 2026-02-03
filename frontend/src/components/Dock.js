@@ -1,6 +1,6 @@
 import React from "react";
 
-const Dock = ({ windows, onWindowClick }) => {
+const Dock = ({ windows, onWindowClick, isMobile }) => {
   const dockItems = [
     {
       id: "finder",
@@ -35,14 +35,14 @@ const Dock = ({ windows, onWindowClick }) => {
   ];
 
   return (
-    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-50" data-testid="dock">
+    <div className={`absolute ${isMobile ? 'bottom-1 left-2 right-2' : 'bottom-2 left-1/2 transform -translate-x-1/2'} z-50`} data-testid="dock">
       <div
-        className="bg-white/10 backdrop-blur-3xl rounded-2xl px-3 py-2 border border-white/20 shadow-2xl"
+        className={`bg-white/10 backdrop-blur-3xl rounded-2xl ${isMobile ? 'px-2 py-1.5' : 'px-3 py-2'} border border-white/20 shadow-2xl ${isMobile ? 'mx-auto max-w-fit' : ''}`}
         style={{
           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <div className="flex items-end space-x-2">
+        <div className={`flex items-end ${isMobile ? 'space-x-1' : 'space-x-2'}`}>
           {dockItems.map((item) => (
             <button
               key={item.id}
@@ -51,20 +51,22 @@ const Dock = ({ windows, onWindowClick }) => {
               title={item.name}
               data-testid={`dock-${item.id}-icon`}
             >
-              <div className="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center hover:scale-110 transition-transform duration-200">
-                <img src={item.icon} alt={item.name} className="w-12 h-12" />
+              <div className={`${isMobile ? 'w-10 h-10' : 'w-14 h-14'} rounded-xl bg-white/5 flex items-center justify-center hover:scale-110 transition-transform duration-200`}>
+                <img src={item.icon} alt={item.name} className={`${isMobile ? 'w-8 h-8' : 'w-12 h-12'}`} />
               </div>
               
-              {/* Tooltip */}
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <div className="bg-black/80 backdrop-blur-xl text-white text-xs px-3 py-1 rounded-lg whitespace-nowrap">
-                  {item.name}
+              {/* Tooltip - only on desktop */}
+              {!isMobile && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="bg-black/80 backdrop-blur-xl text-white text-xs px-3 py-1 rounded-lg whitespace-nowrap">
+                    {item.name}
+                  </div>
                 </div>
-              </div>
+              )}
               
               {/* Active indicator */}
               {windows[item.id]?.open && (
-                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white/60 rounded-full" />
+                <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full`} />
               )}
             </button>
           ))}
