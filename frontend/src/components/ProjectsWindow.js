@@ -150,15 +150,20 @@ const ProjectsWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex, isM
 
         {/* Content */}
         <div className="flex flex-1 overflow-hidden relative">
+          {/* Mobile sidebar overlay */}
+          {isMobile && showMobileSidebar && (
+            <div 
+              className="absolute inset-0 bg-black/40 z-10"
+              onClick={() => setShowMobileSidebar(false)}
+            />
+          )}
+          
           {/* Sidebar */}
           <div className={`${isMobile 
-            ? `absolute inset-0 z-10 ${showMobileSidebar ? 'block' : 'hidden'}` 
-            : 'w-48'} bg-gray-50/80 ${!isMobile && 'border-r border-gray-200'}`}
+            ? `absolute left-0 top-0 bottom-0 z-20 transform transition-transform duration-300 ${showMobileSidebar ? 'translate-x-0' : '-translate-x-full'}` 
+            : 'w-48 border-r border-gray-200'} bg-gray-50`}
           >
-            {isMobile && showMobileSidebar && (
-              <div className="absolute inset-0 bg-gray-50" onClick={() => setShowMobileSidebar(false)} />
-            )}
-            <div className={`relative z-10 bg-gray-50 h-full ${isMobile ? 'w-56 shadow-xl' : ''} p-3`}>
+            <div className={`h-full ${isMobile ? 'w-56 shadow-xl' : ''} p-3`}>
               <div className="flex justify-between items-center mb-2 px-2">
                 <span className="text-xs font-semibold text-gray-500">PORTFÓLIÓ</span>
                 {isMobile && (
