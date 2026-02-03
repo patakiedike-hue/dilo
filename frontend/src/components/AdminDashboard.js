@@ -79,6 +79,7 @@ const AdminDashboard = () => {
   const handleFolderClick = (folder) => {
     setSelectedFolder(folder);
     loadImages(folder.id);
+    if (isMobile) setShowMobileSidebar(false);
   };
 
   const handleUploadImage = async (e) => {
