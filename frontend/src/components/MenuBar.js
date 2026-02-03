@@ -23,23 +23,23 @@ const MenuBar = () => {
 
   return (
     <div
-      className="absolute top-0 left-0 right-0 h-8 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-4 z-50"
+      className="absolute top-0 left-0 right-0 h-7 md:h-8 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-2 md:px-4 z-50"
       data-testid="menu-bar"
     >
       {/* Left side */}
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2 md:space-x-3">
         <img
           src="https://res.cloudinary.com/dopdx8kvy/image/upload/f_auto,q_auto/web.png"
           alt="Logo"
-          className="h-5 w-5"
+          className="h-4 w-4 md:h-5 md:w-5"
         />
-        <span className="text-white text-sm font-semibold">Weboldal készítés</span>
+        <span className="text-white text-xs md:text-sm font-semibold truncate max-w-[140px] md:max-w-none">Weboldal készítés</span>
       </div>
 
       {/* Right side */}
-      <div className="flex items-center space-x-4">
-        <button className="text-white hover:bg-white/10 p-1 rounded">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="flex items-center space-x-2 md:space-x-4">
+        <button className="text-white hover:bg-white/10 p-0.5 md:p-1 rounded hidden md:block">
+          <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -49,8 +49,8 @@ const MenuBar = () => {
           </svg>
         </button>
         
-        <button className="text-white hover:bg-white/10 p-1 rounded">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button className="text-white hover:bg-white/10 p-0.5 md:p-1 rounded hidden md:block">
+          <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -60,7 +60,7 @@ const MenuBar = () => {
           </svg>
         </button>
         
-        <div className="text-white text-sm" id="time">{currentTime}</div>
+        <div className="text-white text-xs md:text-sm" id="time">{currentTime}</div>
       </div>
     </div>
   );
