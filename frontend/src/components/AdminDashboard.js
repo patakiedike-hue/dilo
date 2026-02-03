@@ -153,30 +153,47 @@ const AdminDashboard = () => {
         }}
       />
       {/* Top bar */}
-      <div className="h-8 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-4">
-        <div className="flex items-center space-x-4">
+      <div className="h-7 md:h-8 bg-black/20 backdrop-blur-2xl border-b border-white/10 flex items-center justify-between px-2 md:px-4 relative z-10">
+        <div className="flex items-center space-x-2 md:space-x-4">
           <button
             onClick={() => navigate("/")}
-            className="text-white text-sm hover:bg-white/10 px-2 py-1 rounded"
+            className="text-white text-xs md:text-sm hover:bg-white/10 px-2 py-1 rounded"
             data-testid="back-to-desktop"
           >
             ← Vissza
           </button>
-          <span className="text-white text-sm font-semibold">Admin - Fájlkezelő</span>
+          <span className="text-white text-xs md:text-sm font-semibold">Admin - Fájlkezelő</span>
         </div>
+        {/* Mobile menu button */}
+        {isMobile && (
+          <button 
+            onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+            className="text-white p-1 hover:bg-white/10 rounded"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative z-10">
         {/* Finder window */}
-        <div className="m-4 flex-1 bg-white/95 backdrop-blur-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20">
-          <div className="h-full flex">
-            {/* Sidebar */}
-            <div className="w-64 bg-gray-50/80 border-r border-gray-200 flex flex-col">
-              <div className="p-4 border-b border-gray-200">
+        <div className={`${isMobile ? 'm-2' : 'm-4'} flex-1 bg-white/95 backdrop-blur-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20`}>
+          <div className="h-full flex relative">
+            {/* Sidebar - Mobile overlay or Desktop fixed */}
+            {isMobile && showMobileSidebar && (
+              <div className="absolute inset-0 bg-black/40 z-10" onClick={() => setShowMobileSidebar(false)} />
+            )}
+            <div className={`${isMobile 
+              ? `absolute left-0 top-0 bottom-0 z-20 transform transition-transform duration-300 ${showMobileSidebar ? 'translate-x-0' : '-translate-x-full'}` 
+              : 'relative'} w-56 md:w-64 bg-gray-50/80 border-r border-gray-200 flex flex-col`}
+            >
+              <div className="p-3 md:p-4 border-b border-gray-200 flex items-center justify-between">
                 <button
                   onClick={() => setShowNewFolder(true)}
-                  className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center justify-center space-x-2"
+                  className="flex-1 px-3 md:px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs md:text-sm font-medium flex items-center justify-center space-x-2"
                   data-testid="new-folder-button"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,9 +201,19 @@ const AdminDashboard = () => {
                   </svg>
                   <span>Új mappa</span>
                 </button>
+                {isMobile && (
+                  <button 
+                    onClick={() => setShowMobileSidebar(false)}
+                    className="ml-2 p-2 hover:bg-gray-200 rounded"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
               </div>
 
-              <div className="flex-1 overflow-y-auto p-3">
+              <div className="flex-1 overflow-y-auto p-2 md:p-3">
                 <div className="text-xs font-semibold text-gray-500 mb-2 px-2">MAPPÁK</div>
                 <div className="space-y-1">
                   {folders.map((folder) => (
@@ -200,7 +227,7 @@ const AdminDashboard = () => {
                       onClick={() => handleFolderClick(folder)}
                       data-testid={`folder-item-${folder.id}`}
                     >
-                      <div className="flex items-center space-x-2 text-sm flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 text-xs md:text-sm flex-1 min-w-0">
                         <span>📁</span>
                         <span className="truncate">{folder.name}</span>
                       </div>
@@ -230,12 +257,12 @@ const AdminDashboard = () => {
             {/* Main content area */}
             <div className="flex-1 flex flex-col">
               {/* Toolbar */}
-              <div className="h-14 border-b border-gray-200 flex items-center justify-between px-4 bg-white/50">
-                <h2 className="text-lg font-semibold text-gray-800">
+              <div className="h-12 md:h-14 border-b border-gray-200 flex items-center justify-between px-3 md:px-4 bg-white/50">
+                <h2 className="text-sm md:text-lg font-semibold text-gray-800 truncate">
                   {selectedFolder ? selectedFolder.name : "Válassz egy mappát"}
                 </h2>
                 {selectedFolder && (
-                  <label className="cursor-pointer">
+                  <label className="cursor-pointer flex-shrink-0">
                     <input
                       type="file"
                       multiple
@@ -244,7 +271,7 @@ const AdminDashboard = () => {
                       className="hidden"
                       data-testid="upload-image-input"
                     />
-                    <div className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center space-x-2">
+                    <div className="px-3 md:px-4 py-1.5 md:py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs md:text-sm font-medium flex items-center space-x-1 md:space-x-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
@@ -253,23 +280,24 @@ const AdminDashboard = () => {
                           d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                         />
                       </svg>
-                      <span>Kép feltöltés</span>
+                      <span className="hidden md:inline">Kép feltöltés</span>
+                      <span className="md:hidden">Feltöltés</span>
                     </div>
                   </label>
                 )}
               </div>
 
               {/* Content grid */}
-              <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
+              <div className="flex-1 overflow-y-auto p-3 md:p-6 bg-gray-50/30">
                 {uploading && (
                   <div className="text-center py-8 text-gray-600">
-                    <div className="animate-pulse">Feltöltés...</div>
+                    <div className="animate-pulse text-sm">Feltöltés...</div>
                   </div>
                 )}
                 {!selectedFolder ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center text-gray-500">
-                      <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -277,13 +305,13 @@ const AdminDashboard = () => {
                           d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
                         />
                       </svg>
-                      <p>Válassz ki egy mappát a bal oldali menüből</p>
+                      <p className="text-xs md:text-sm">Válassz ki egy mappát a {isMobile ? 'menüből' : 'bal oldali menüből'}</p>
                     </div>
                   </div>
                 ) : images.length === 0 ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center text-gray-500">
-                      <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -291,11 +319,11 @@ const AdminDashboard = () => {
                           d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-                      <p>Még nincsenek képek ebben a mappában</p>
+                      <p className="text-xs md:text-sm">Még nincsenek képek ebben a mappában</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-3 md:grid-cols-4'} gap-3 md:gap-4`}>
                     {images.map((image) => (
                       <div
                         key={image.id}
@@ -309,10 +337,10 @@ const AdminDashboard = () => {
                         />
                         <button
                           onClick={() => handleDeleteImage(image.id)}
-                          className="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                          className={`absolute top-2 right-2 w-7 h-7 md:w-8 md:h-8 bg-red-500 hover:bg-red-600 text-white rounded-full ${isMobile ? 'opacity-80' : 'opacity-0 group-hover:opacity-100'} transition-opacity flex items-center justify-center`}
                           data-testid={`delete-image-${image.id}`}
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -334,34 +362,34 @@ const AdminDashboard = () => {
       {/* New folder modal */}
       {showNewFolder && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={() => setShowNewFolder(false)}
         >
           <div
-            className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl"
+            className="bg-white rounded-2xl p-4 md:p-6 max-w-md w-full shadow-2xl"
             onClick={(e) => e.stopPropagation()}
             data-testid="new-folder-modal"
           >
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Új mappa létrehozása</h3>
+            <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-4">Új mappa létrehozása</h3>
             <input
               type="text"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               placeholder="Mappa neve"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+              className="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 text-sm md:text-base"
               autoFocus
               data-testid="new-folder-name-input"
             />
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowNewFolder(false)}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="px-3 md:px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm md:text-base"
               >
                 Mégse
               </button>
               <button
                 onClick={handleCreateFolder}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+                className="px-3 md:px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm md:text-base"
                 data-testid="create-folder-submit"
               >
                 Létrehozás
