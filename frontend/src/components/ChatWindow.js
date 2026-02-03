@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDraggable } from "@/hooks/useDraggable";
 
-const ChatWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex }) => {
+const ChatWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex, isMobile }) => {
   const { position, elementRef, handleMouseDown, isDragging } = useDraggable();
   const [messages, setMessages] = useState([
     {
@@ -50,25 +50,38 @@ const ChatWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex }) => {
 
   if (isMinimized) return null;
 
+  // Mobile styles
+  const mobileStyles = isMobile ? {
+    position: 'fixed',
+    left: '8px',
+    right: '8px',
+    top: '36px',
+    bottom: '60px',
+    width: 'auto',
+    height: 'auto',
+  } : {
+    left: `calc(30% + ${position.x}px)`,
+    top: `calc(15% + ${position.y}px)`,
+    width: "450px",
+    height: "600px",
+  };
+
   return (
     <div
       ref={elementRef}
-      className="absolute animate-slide-up"
+      className={`${isMobile ? 'fixed' : 'absolute'} animate-slide-up`}
       style={{
         zIndex,
-        left: `calc(30% + ${position.x}px)`,
-        top: `calc(15% + ${position.y}px)`,
-        width: "450px",
-        height: "600px",
-        cursor: isDragging ? 'grabbing' : 'default',
+        ...mobileStyles,
+        cursor: isMobile ? 'default' : (isDragging ? 'grabbing' : 'default'),
       }}
       onClick={onFocus}
-      onMouseDown={handleMouseDown}
+      onMouseDown={isMobile ? undefined : handleMouseDown}
       data-testid="chat-window"
     >
       <div className="bg-white/95 backdrop-blur-2xl rounded-xl shadow-2xl overflow-hidden border border-white/20 h-full flex flex-col">
         {/* Window header */}
-        <div className="window-header bg-gradient-to-b from-gray-100 to-gray-50 border-b border-gray-200 px-4 py-3 flex items-center justify-between cursor-grab active:cursor-grabbing">
+        <div className={`window-header bg-gradient-to-b from-gray-100 to-gray-50 border-b border-gray-200 px-3 md:px-4 py-2 md:py-3 flex items-center justify-between ${isMobile ? '' : 'cursor-grab active:cursor-grabbing'}`}>
           <div className="flex items-center space-x-2">
             <button
               onClick={onClose}
@@ -82,32 +95,32 @@ const ChatWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex }) => {
             <button className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600" />
           </div>
           <div className="flex-1 text-center">
-            <h2 className="text-sm font-semibold text-gray-700">Beyond</h2>
+            <h2 className="text-xs md:text-sm font-semibold text-gray-700">Beyond</h2>
           </div>
           <div className="w-16"></div>
         </div>
 
         {/* Chat content */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+        <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gray-50">
           {messages.map((message, index) => (
             <div
               key={index}
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                className={`max-w-[85%] md:max-w-[80%] rounded-2xl px-3 md:px-4 py-2 ${
                   message.role === "user"
                     ? "bg-blue-500 text-white"
                     : "bg-white text-gray-800 border border-gray-200"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                <p className="text-xs md:text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
             </div>
           ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 rounded-2xl px-4 py-2">
+              <div className="bg-white border border-gray-200 rounded-2xl px-3 md:px-4 py-2">
                 <div className="flex space-x-2">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" />
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
@@ -119,7 +132,7 @@ const ChatWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex }) => {
         </div>
 
         {/* Input */}
-        <div className="p-4 bg-white border-t border-gray-200">
+        <div className="p-3 md:p-4 bg-white border-t border-gray-200">
           <div className="flex items-center space-x-2">
             <input
               type="text"
@@ -127,17 +140,17 @@ const ChatWindow = ({ onClose, onMinimize, onFocus, isMinimized, zIndex }) => {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
               placeholder="Írj egy üzenetet..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-3 md:px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
               disabled={loading}
               data-testid="chat-input"
             />
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               data-testid="chat-send-button"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
